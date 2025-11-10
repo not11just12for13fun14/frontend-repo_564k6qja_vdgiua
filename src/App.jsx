@@ -1,28 +1,38 @@
-import { useState } from 'react'
+import React, { useCallback, useState } from 'react';
+import Hero3D from './components/Hero3D';
+import FeaturedPacks from './components/FeaturedPacks';
+import ProducersPicks from './components/ProducersPicks';
+import Testimonials from './components/Testimonials';
+import Checkout from './components/Checkout';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const openCheckout = useCallback((item) => {
+    if (item) setSelectedItem(item);
+    setCheckoutOpen(true);
+  }, []);
+
+  const closeCheckout = useCallback(() => {
+    setCheckoutOpen(false);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+    <div className="min-h-screen w-full bg-black text-white">
+      <Hero3D onBuyClick={() => openCheckout(null)} />
 
-export default App
+      <div className="pointer-events-none mx-auto -mt-10 h-10 max-w-7xl bg-gradient-to-t from-black to-transparent" />
+
+      <FeaturedPacks onBuy={openCheckout} />
+      <ProducersPicks />
+      <Testimonials />
+
+      <footer className="mx-auto max-w-7xl px-6 py-12 text-center text-cyan-100/70">
+        <p>© {new Date().getFullYear()} Cyber Sample Lab — Crafted for creators.</p>
+      </footer>
+
+      <Checkout open={checkoutOpen} onClose={closeCheckout} item={selectedItem} />
+    </div>
+  );
+}
